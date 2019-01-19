@@ -1,22 +1,22 @@
 <div class="p-3 mb-3 bg-light rounded">
-    <h4 class="font-italic">About {{user.username}}</h4>
-    <h5><strong>FullName: </strong>{{user.profile.full_name}}</h5>
+    <h4 class="font-italic">About {{username}}</h4>
+    <h5><strong>FullName: </strong>{{profile.full_name}}</h5>
     {% if user.profile.avatar %}
-        <img src="{{user.profile.avatar.url}}" class="img-fluid img-thumbnail" width="200px" alt="">
+        <img src="{{profile.avatar.url}}" class="img-fluid img-thumbnail" width="200px" alt="">
     {% endif %}
     <p class="mb-0">
-        <strong class="text-success">bio:</strong> {{user.profile.bio}}
+        <strong class="text-success">bio:</strong> {{profile.bio}}
     </p>
     {% ifequal user request.user %}
-        <a href="{% url 'profile_update' user.profile.pk %}" class="btn btn-outline-info btn-sm mt-2">Edit Profile</a>
+        <a href="{% url 'profile_update' profile.pk %}" class="btn btn-outline-info btn-sm mt-2">Edit Profile</a>
     {% endifequal %}
 </div>
 <div class="p-3">
-    <h4 class="font-italic">Get in touch with {{ user.username }}</h4>
+    <h4 class="font-italic">Get in touch with {{ username }}</h4>
     <ol class="list-unstyled">
-        <li><a href="{{ user.profile.github }}">GitHub</a></li>
-        <li><a href="{{ user.profile.twitter }}">Twitter</a></li>
-        <li><a href="{{ user.profile.facebook }}">Facebook</a></li>
+        <li><a href="{{ profile.github }}">GitHub</a></li>
+        <li><a href="{{ profile.twitter }}">Twitter</a></li>
+        <li><a href="{{ profile.facebook }}">Facebook</a></li>
     </ol>
 </div>
 <div class="p-3 mb-2">

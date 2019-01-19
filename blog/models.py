@@ -69,9 +69,6 @@ class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.ForeignKey)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'Like: {self.user.username}, {self.article.title}'
-
     class Meta:
         unique_together = (('user', 'article'),)
 
@@ -79,9 +76,6 @@ class Like(models.Model):
 class Dislike(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.ForeignKey)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'Dislike {self.user.username}, {self.article.title}'
 
     class Meta:
         unique_together = (('user', 'article'),)

@@ -54,6 +54,7 @@ class DashboardView(generic.TemplateView):
     def dispatch(self, * args, ** kwargs):
         user = self.request.user 
         self.extra_context['user'] = user
+        self.extra_context['profile'] = user.profile
         return super().dispatch( * args, ** kwargs)
 
 
@@ -77,12 +78,13 @@ class EditProfileView(generic.UpdateView):
     model = Profile
     fields = ['full_name','bio','avatar','github','facebook','twitter']
     success_url = reverse_lazy('dashboard')
+    context_object_name = 'profile'
 
     def form_valid(self, form):
         form.instance.avatar = form.instance.avatar
         return super().form_valid(form)
 
-
+    
 class UpdateArticleView(generic.UpdateView):
     model = Article
     success_url = reverse_lazy('dashboard')
@@ -109,13 +111,11 @@ class UserPageView(generic.TemplateView):
 def like_article(request, slug):
     article = get_object_or_404(Article, slug=slug)
     user = request.user
-    print(request.method)
     likes = Like.objects.filter(user=user).filter(article=article)
-    print(likes)
     if len(likes) > 0:
-        print('like not created')
-        return render(request, 'blog/article_detail.html', {'article': article})
-    print('like created')
+        likes.delete() 
+        return render(request, 'blog/article_detail.html',
+            {'article': article, 'profile': user.profile})
     Like.objects.create(article=article, user=user)
     return redirect(article.get_absolute_url())
     
@@ -126,7 +126,9 @@ def dislike_article(request, slug):
     user = request.user
     dislikes = Dislike.objects.filter(user=user).filter(article=article)
     if len(dislikes) > 0:
-        return render(request, 'blog/article_detail.html', {'article': article})
+        dislikes.delete()
+        return render(request, 'blog/article_detail.html',
+            {'article': article, 'profile': user.profile})
     Dislike.objects.create(article=article, user=user)
     return redirect(article.get_absolute_url())
 

@@ -12,6 +12,18 @@ class ArticleListViewTests(TestCase):
         self.assertTemplateUsed(response, 'blog/article_list.html')
         self.assertContains(response, 'No articles available yet.')
 
+    def test_one_article_published(self):
+        """
+        The view returns the single article even if its the only published
+        article.
+        """
+        article = mixer.blend('blog.article', publish=True)
+        response = self.client.get(reverse('article_list'))
+        self.assertQuerysetEqual(
+            response.context['articles'],
+            [f'<Article: {article.title} by {article.author.username}>']
+        )
+
     def test_three_published_and_two_unpublished_articles(self):
         """
         The `ArticleListView only displays published articles.
@@ -173,10 +185,19 @@ class EditProfileViewTests(TestCase):
         cls.user = mixer.blend('auth.User')
         cls.url = reverse('profile_update', args=(cls.user.profile.pk,))
 
+    def test_retrieve_a_profile(self):
+        """
+        The view retreives a `Profile` object.
+        """
+        response = self.client.get(self.url)
+        self.assertEqual(
+            str(response.context['profile']),
+            f'Profile, {self.user.username}'
+        )
 
     def test_authenticated_user(self):
         """
-        Authenticated users can edit their profiles.
+        Authenticated users can access the edit profile page.
         """
         self.client.force_login(self.user)
         response = self.client.get(self.url)
@@ -244,7 +265,8 @@ class UserPageViewTests(TestCase):
         )
 
 
-class LikeDislikeViewsTests(TestCase):
+class LikeViewTests(TestCase):
+
     def test_like_article_by_unauthenticated_user(self):
         """
         Uauthenticated users are redirected to the `login` page before they
@@ -264,29 +286,26 @@ class LikeDislikeViewsTests(TestCase):
         self.client.force_login(user)
         article = mixer.blend('blog.article', publish=True)
         url = reverse('like_article', args=(article.slug, ))
-        response = self.client.post(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(article.like_set.count(), 1)
 
-    @tag('b')
-    def test_like_article_on_liked_article_by_authenticated_user(self):
+    def test_undo_like(self):
         """
-        An article can only be liked once by the same user.
+        User can undo a like action by liking the article again.
         """
         user = mixer.blend('auth.User')
         self.client.force_login(user)
         article = mixer.blend('blog.article', publish=True)
         url = reverse('like_article', args=(article.slug, ))
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(article.like_set.count(), 1) 
-        url = reverse('like_article', args=(article.slug, ))
 
-        # second like action
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(article.like_set.count(), 1) # likes count still at 1 not 2
-         
+        # like the article again
+        response = self.client.get(url)
+        self.assertEqual(article.like_set.count(), 0)
+
+
+class DislikeViewTests(TestCase):
 
     def test_dislike_article_by_unauthenticated_user(self):
         """
@@ -295,7 +314,7 @@ class LikeDislikeViewsTests(TestCase):
         """
         article = mixer.blend('blog.article', publish=True)
         url = reverse('dislike_article', args=(article.slug, ))
-        response = self.client.post(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(article.dislike_set.count(), 0)
 
@@ -307,23 +326,20 @@ class LikeDislikeViewsTests(TestCase):
         self.client.force_login(user)
         article = mixer.blend('blog.article', publish=True)
         url = reverse('dislike_article', args=(article.slug, ))
-        response = self.client.post(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(article.dislike_set.count(), 1)
 
-    def test_dislike_article_on_liked_article_by_authenticated_user(self):
+    def test_undo_dislike(self):
         """
-        An article can only be disliked once by the same user.
+        User can undo a dislike action by disliking the article again.
         """
         user = mixer.blend('auth.User')
         self.client.force_login(user)
         article = mixer.blend('blog.article', publish=True)
         url = reverse('dislike_article', args=(article.slug, ))
         response = self.client.get(url)
-        #self.assertEqual(response.status_code, 302)
-        self.assertEqual(article.dislike_set.count(), 1)  
 
-        # second dislike action
+        # dislike the article again
         response = self.client.get(url)
-        #self.assertEqual(response.status_code, 200)
-        self.assertEqual(article.dislike_set.count(), 1) # dislikes still 1 not 2
+        self.assertEqual(article.dislike_set.count(), 0)
