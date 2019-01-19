@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <h3 class="text-monospace text-capitalize">{{ username }} </h3>
+        <span class="text-info text-capitalize">published {{ article_count }} Article{{ article_count|pluralize }} so far </span>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            {% for article in user_articles %}
+                {% include 'blog/article.html' %}
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            {% include 'blog/profile.html' %}
+        </div>
+    </div>
+    
+{% endblock %}

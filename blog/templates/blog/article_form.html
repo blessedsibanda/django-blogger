@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Article{% endblock %}
+
+{% block content %}
+    {% with url_name=request.resolver_match.url_name %}
+        {% ifequal url_name 'create_article' %}
+            <h3>Create a new article</h3>
+        {% else %}
+            <h3>Edit article</h3>
+        {% endifequal %}
+    {% endwith %}
+    
+    <form class="col-md-5" action="" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Save Article</button>
+    </form>
+    <br>
+{% endblock %}

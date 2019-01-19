@@ -1,0 +1,6 @@
+Hi {{user.username}}
+Click this link {{scheme}}://{{site.domain}}/accounts/activate/{{ activation_key }} 
+to activate your account.
+This link expires in {{ expiration_days }} days.
+
+Cheers: The Django Blogger Team

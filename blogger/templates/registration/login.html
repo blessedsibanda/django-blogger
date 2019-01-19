@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}User Login{% endblock %}
+{% block head %}User Login{% endblock %}
+
+{% block content %}
+    {% if form.errors %}
+        <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed,
+                please login with an account that has access.</p>
+        {% else %}
+            <p>Please login to see this page.</p>
+        {% endif %}
+    {% endif %}
+    <div class="d-flex">
+        <form method="post" class="col-md-5" action="{% url 'login' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-success" type="submit" value="login">
+            <input type="hidden" name="next" value="{{ next }}">
+            <a class="ml-3" href="{% url 'password_reset' %}">Lost password?</a>
+        </form>
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br>     <!-- Break tags to push the footer downwards -->
+{% endblock %}

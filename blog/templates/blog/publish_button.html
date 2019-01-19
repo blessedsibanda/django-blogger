@@ -1,0 +1,4 @@
+{% ifequal article.author request.user %}
+    <a href="#" disabled class="disabled badge badge-dark badge-pill">Not published yet</a>
+    <a href="{% url 'article_update' article.slug %}" class="btn btn-outline-success btn-sm rounded-circle">Publish Now</a>
+{% endifequal %}

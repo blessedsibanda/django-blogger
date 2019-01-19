@@ -1,0 +1,24 @@
+<div>
+    <h4>
+        <a href="{{ article.get_absolute_url }}">{{ article.title|title }}</a> 
+    </h4>
+    {% ifequal article.author request.user %}
+        <a href="#" class="badge badge-info badge-pill">published by me</a>
+    {% else %}
+        <span class="text-muted">
+            by <a href="{% url 'user_page' article.author.username %}">{{ article.author.username }}</a>
+        </span>
+    {% endifequal %}
+    <p>{{ article.content|truncatechars:50 }}...</p>
+    {% if article.publish %}
+        <h6>Posted on {{ article.pub_date }}</h6>
+    {% else %}
+        {% include 'blog/publish_button.html' %}
+    {% endif %}
+
+    <!-- Like/Dislike count -->
+    <span class="badge badge-secondary">{{ article.likes }} Like{{ article.likes|pluralize }}</span> 
+    <span class="mr-3"></span>
+    <span class="badge badge-secondary">{{ article.dislikes }} Dislike{{ article.dislikes|pluralize }}</span> 
+    <hr>
+</div>

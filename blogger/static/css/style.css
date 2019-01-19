@@ -1,0 +1,15 @@
+a {
+    color: green;
+}
+
+a:hover {
+    color: blue;
+}
+
+.btn {
+    border-radius: 0px;
+}
+
+footer {
+    clear: both;
+}

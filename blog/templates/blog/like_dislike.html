@@ -1,0 +1,3 @@
+<a href="{% url 'like_article' article.slug %}">{{ article.likes }} Like{{ article.likes|pluralize }}</a> 
+<span class="mr-3"></span>
+<a href="{% url 'dislike_article' article.slug %}">{{ article.dislikes }} Dislike{{ article.dislikes|pluralize }}</a> 

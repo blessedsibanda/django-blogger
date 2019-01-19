@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <h3 class="text-monospace">Dashboard</h3>
+        <span class="text-info text-capitalize">{{ request.user.username }}</span>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            {% for article in request.user.article_set.all %}
+                {% include 'blog/article.html' %}
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            {% include 'blog/profile.html' %}
+        </div>
+    </div>
+    
+{% endblock %}

@@ -1,0 +1,49 @@
+<header class="pb-2">
+    <nav class="navbar navbar-expand-lg navbar-light bg-success">
+        <a class="navbar-brand" href="#">Django Blogger</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent"> 
+            {% with url_name=request.resolver_match.url_name %}
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ml-md-5 {% if url_name == 'article_list' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'article_list' %}">Home</a>
+                </li>
+                <li class="nav-item {% if url_name == 'popular_articles' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'popular_articles' %}">Popular</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item {% if url_name == 'create_article' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'create_article' %}">Add Post</a>
+                    </li>
+                    <li class="nav-item dropdown ml-md-5">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="text-capitalize">{{ request.user.username }}</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a>
+                            <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item {% if url_name == 'login' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item {% if url_name == 'django_registration_register' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'django_registration_register' %}">Become an Author</a>
+                    </li>
+                {% endif %}
+            </ul>
+            {% endwith %}
+            <form class="form-inline my-2 my-lg-0" action="{% url 'article_list' %}" method="GET">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" aria-label="Search">
+                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+</header>

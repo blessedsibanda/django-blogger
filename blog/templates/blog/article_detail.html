@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Articles{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-3 mt-2">
+                    <h3 class="d-inline text-success">{{ article.title|title }}</h3>
+                    {% ifequal article.author request.user %}
+                        <a href="{% url 'article_update' article.slug %}" class="btn btn-success btn-sm float-right">Edit</a>
+                    {% endifequal %}
+            </div>
+            
+            <div class="jumbotron">
+                {{ article.content|linebreaks }}
+                {% ifnotequal article.author request.user %}
+                    <p class="text-muted">by {{ article.author.username }} on {{ article.pub_date }}</p> 
+                {% endifnotequal %}
+                {% include 'blog/like_dislike.html' %}
+            </div>
+            {% if not article.publish %}
+                {% include 'blog/publish_button.html' %}
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            {% include 'blog/profile.html' %}
+        </div>
+    </div>
+{% endblock %}
