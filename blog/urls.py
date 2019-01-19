@@ -11,5 +11,5 @@ urlpatterns = [
     path('article/<slug>/update/', views.UpdateArticleView.as_view(), name='article_update'),
     path('user/<username>/', views.UserPageView.as_view(), name='user_page'),
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
-    path('dashboard/<int:pk>/update', views.EditProfile.as_view(), name='profile_update'),
+    path('dashboard/<int:pk>/update', views.EditProfileView.as_view(), name='profile_update'),
 ]

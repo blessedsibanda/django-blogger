@@ -1,6 +1,6 @@
 from operator import attrgetter
 
-from django.shortcuts import get_object_or_404, reverse, redirect
+from django.shortcuts import get_object_or_404, reverse, redirect, render
 from django.urls import reverse_lazy
 from django.views import generic 
 from django.contrib.auth.models import User
@@ -68,8 +68,12 @@ class AddArticleView(generic.CreateView):
         form.instance.slug = slugify(form.instance.title)
         return super().form_valid(form)
 
+    @method_decorator(login_required)
+    def dispatch(self, * args, ** kwargs):
+        return super().dispatch( * args, ** kwargs)
 
-class EditProfile(generic.UpdateView):
+
+class EditProfileView(generic.UpdateView):
     model = Profile
     fields = ['full_name','bio','avatar','github','facebook','twitter']
     success_url = reverse_lazy('dashboard')
@@ -105,10 +109,14 @@ class UserPageView(generic.TemplateView):
 def like_article(request, slug):
     article = get_object_or_404(Article, slug=slug)
     user = request.user
-    try:
-        Like.objects.create(article=article, user=user)
-    except:
-        pass 
+    print(request.method)
+    likes = Like.objects.filter(user=user).filter(article=article)
+    print(likes)
+    if len(likes) > 0:
+        print('like not created')
+        return render(request, 'blog/article_detail.html', {'article': article})
+    print('like created')
+    Like.objects.create(article=article, user=user)
     return redirect(article.get_absolute_url())
     
 
@@ -116,10 +124,10 @@ def like_article(request, slug):
 def dislike_article(request, slug):
     article = get_object_or_404(Article, slug=slug)
     user = request.user
-    try:
-        Dislike.objects.create(article=article, user=user)
-    except:
-        pass 
+    dislikes = Dislike.objects.filter(user=user).filter(article=article)
+    if len(dislikes) > 0:
+        return render(request, 'blog/article_detail.html', {'article': article})
+    Dislike.objects.create(article=article, user=user)
     return redirect(article.get_absolute_url())
 
 
