@@ -147,3 +147,9 @@ EMAIL_BACKEND = (
 # Media files 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'blogger', 'media')
 MEDIA_URL = '/media/'
+
+# Authentication
+AUTHENTICATION_BACKENDS = (
+    'blog.email_authentication.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
