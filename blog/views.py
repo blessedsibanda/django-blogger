@@ -1,6 +1,7 @@
 from operator import attrgetter
 
 from django.shortcuts import get_object_or_404, reverse, redirect, render
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views import generic 
 from django.contrib.auth.models import User
@@ -114,11 +115,15 @@ def like_article(request, slug):
     likes = Like.objects.filter(user=user).filter(article=article)
     if len(likes) > 0:
         likes.delete() 
-        return render(request, 'blog/article_detail.html',
-            {'article': article, 'profile': user.profile})
+        data = {
+            'likes': Like.objects.filter(article=article).count()
+        }
+        return JsonResponse(data)
     Like.objects.create(article=article, user=user)
-    return redirect(article.get_absolute_url())
-    
+    data = {
+        'likes': Like.objects.filter(article=article).count()
+    }
+    return JsonResponse(data)
 
 @login_required
 def dislike_article(request, slug):
@@ -127,10 +132,15 @@ def dislike_article(request, slug):
     dislikes = Dislike.objects.filter(user=user).filter(article=article)
     if len(dislikes) > 0:
         dislikes.delete()
-        return render(request, 'blog/article_detail.html',
-            {'article': article, 'profile': user.profile})
+        data = {
+            'dislikes': Dislike.objects.filter(article=article).count()
+        }
+        return JsonResponse(data)
     Dislike.objects.create(article=article, user=user)
-    return redirect(article.get_absolute_url())
+    data = {
+        'dislikes': Dislike.objects.filter(article=article).count()
+    }
+    return JsonResponse(data)
 
 
 class PopularArticlesView(generic.ListView):
