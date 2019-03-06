@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 
 {% block title %}User Login{% endblock %}
 {% block head %}User Login{% endblock %}
@@ -19,7 +18,18 @@
     <div class="d-flex">
         <form method="post" class="col-md-5" action="{% url 'login' %}">
             {% csrf_token %}
-            {{ form|crispy }}
+
+            <div id="div_id_username" class="form-group"> <label for="id_username" class="col-form-label  requiredField">
+                    Username or Password<span class="asteriskField">*</span> </label>
+                <div class=""> <input type="text" name="username" autofocus class="textinput textInput form-control" required
+                        id="id_username"> </div>
+            </div>
+            <div id="div_id_password" class="form-group"> <label for="id_password" class="col-form-label  requiredField">
+                    Password<span class="asteriskField">*</span> </label>
+                <div class=""> <input type="password" name="password" class="textinput textInput form-control" required
+                        id="id_password"> </div>
+            </div>
+
             <input class="btn btn-success" type="submit" value="login">
             <input type="hidden" name="next" value="{{ next }}">
             <a class="ml-3" href="{% url 'password_reset' %}">Lost password?</a>
